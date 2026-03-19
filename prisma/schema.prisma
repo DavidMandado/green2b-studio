@@ -1,0 +1,266 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ANALYST
+  FOUNDER
+  BUYER_DEMO
+}
+
+enum CompetitorType {
+  DIRECT
+  INDIRECT
+  ADJACENT
+}
+
+enum RegulationTheme {
+  PACKAGING
+  IMPORT
+  WASTE
+  LABELING
+  PROOF
+  CERTIFICATION
+  FOOD_CONTACT
+}
+
+enum ContactStage {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PILOT
+  NEGOTIATING
+  ON_HOLD
+}
+
+enum ProductCategory {
+  STRAWS
+  TAKEAWAY_CUPS
+  BOWLS
+  CUTLERY
+  LIDS
+  NAPKINS
+  FOOD_CONTAINERS
+}
+
+enum EvidenceType {
+  CERTIFICATE
+  DECLARATION
+  PRODUCT_SHEET
+  PACKAGING_SPEC
+  LCA_LITE
+  SOCIAL_POLICY
+  TRANSPORT_DECLARATION
+  AUDIT_NOTE
+}
+
+enum VerificationStatus {
+  VERIFIED
+  PENDING
+  EXPIRED
+  MISSING_CRITICAL
+}
+
+enum ScoreStatus {
+  VERIFIED
+  PROVISIONAL
+  INSUFFICIENT_DATA
+}
+
+model AppState {
+  id         Int      @id
+  activeRole UserRole @default(ANALYST)
+  updatedAt  DateTime @updatedAt
+}
+
+model CountryResearch {
+  id                          String           @id @default(cuid())
+  slug                        String           @unique
+  name                        String           @unique
+  region                      String
+  marketAttractivenessScore   Float
+  horecaDensityScore          Float
+  sustainabilityMaturityScore Float
+  regulatoryComplexityScore   Float
+  easeOfEntryScore            Float
+  logisticsFitScore           Float
+  willingnessToPaySignalScore Float
+  notes                       String
+  recommendationSummary       String
+  priorityMarket              Boolean          @default(false)
+  createdAt                   DateTime         @default(now())
+  updatedAt                   DateTime         @updatedAt
+  interviews                  BuyerInterview[]
+  regulations                 RegulationNote[]
+}
+
+model BuyerInterview {
+  id                             String          @id @default(cuid())
+  slug                           String          @unique
+  companyName                    String
+  city                           String
+  countryResearchId              String
+  businessType                   String
+  numberOfLocations              Int
+  currentSupplierType            String
+  sustainabilityImportance       Int
+  priceSensitivity               Int
+  opennessToAlternativeSuppliers Int
+  painPoints                     Json
+  keyQuote                       String
+  currentProductsBought          Json
+  willingnessToPayNotes          String
+  contactStatus                  String
+  summaryInsight                 String
+  createdAt                      DateTime        @default(now())
+  updatedAt                      DateTime        @updatedAt
+  country                        CountryResearch @relation(fields: [countryResearchId], references: [id], onDelete: Cascade)
+}
+
+model Competitor {
+  id                      String         @id @default(cuid())
+  slug                    String         @unique
+  name                    String         @unique
+  type                    CompetitorType
+  geography               String
+  targetCustomers         Json
+  strengths               Json
+  weaknesses              Json
+  pricingSignal           String
+  hasScoringFeature       Boolean        @default(false)
+  hasCertificationFeature Boolean        @default(false)
+  hasSourcingFeature      Boolean        @default(false)
+  hasMarketplaceFeature   Boolean        @default(false)
+  notes                   String
+  differentiationNotes    String
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime       @updatedAt
+}
+
+model RegulationNote {
+  id                  String          @id @default(cuid())
+  slug                String          @unique
+  countryResearchId   String
+  productCategory     ProductCategory
+  theme               RegulationTheme
+  requirementTitle    String
+  description         String
+  businessImplication String
+  requiredDocuments   Json
+  complexityScore     Float
+  urgencyScore        Float
+  notes               String
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  country             CountryResearch @relation(fields: [countryResearchId], references: [id], onDelete: Cascade)
+}
+
+model Supplier {
+  id                        String       @id @default(cuid())
+  slug                      String       @unique
+  supplierCode              String       @unique
+  name                      String       @unique
+  country                   String
+  city                      String
+  website                   String
+  primaryMaterials          Json
+  productCategories         Json
+  bcorpCertified            Boolean      @default(false)
+  otherCertifications       Json
+  evidenceCompletenessScore Float
+  contactStage              ContactStage
+  reliabilityRating         Float
+  notes                     String
+  riskFlags                 Json
+  createdAt                 DateTime     @default(now())
+  updatedAt                 DateTime     @updatedAt
+  products                  Product[]
+  evidence                  Evidence[]
+}
+
+model Product {
+  id                               String          @id @default(cuid())
+  slug                             String          @unique
+  productCode                      String          @unique
+  supplierId                       String
+  productName                      String
+  category                         ProductCategory
+  targetSegment                    String
+  unitPriceEur                     Float
+  currency                         String
+  minimumOrderQuantity             Int
+  leadTimeDays                     Int
+  originCountry                    String
+  materialDescription              String
+  renewableMaterialPercent         Float?
+  recycledMaterialPercent          Float?
+  virginPlasticPercent             Float?
+  plasticLining                    Boolean?
+  recyclableInPractice             Boolean?
+  industrialCompostable            Boolean?
+  homeCompostable                  Boolean?
+  packagingMaterial                String?
+  packagingRecycledContentPercent  Float?
+  packagingWeightGramsPer100Units  Float?
+  productWeightGramsPer100Units    Float?
+  estimatedCo2ePer1000Units        Float?
+  estimatedWaterLitersPer1000Units Float?
+  transportMode                    String?
+  distanceKm                       Int?
+  supplierDisclosureScore          Float?
+  laborPolicyScore                 Float?
+  traceabilityScore                Float?
+  evidenceStatus                   String
+  notes                            String
+  createdAt                        DateTime        @default(now())
+  updatedAt                        DateTime        @updatedAt
+  supplier                         Supplier        @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  evidence                         Evidence[]
+}
+
+model Evidence {
+  id                 String             @id @default(cuid())
+  evidenceCode       String             @unique
+  supplierId         String?
+  productId          String?
+  type               EvidenceType
+  title              String
+  issuer             String
+  issueDate          DateTime
+  expiryDate         DateTime?
+  verificationStatus VerificationStatus
+  verifiedBy         String?
+  fileName           String
+  notes              String
+  critical           Boolean            @default(false)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  supplier           Supplier?          @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  product            Product?           @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Benchmark {
+  id             String          @id @default(cuid())
+  category       ProductCategory @unique
+  co2eBenchmark  Float
+  waterBenchmark Float
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model ScoringConfig {
+  id                   Int      @id
+  pillarWeights        Json
+  gradeThresholds      Json
+  missingDataPenalties Json
+  rawWeight            Float    @default(0.85)
+  confidenceWeight     Float    @default(0.15)
+  notes                String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}

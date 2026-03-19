@@ -1,26 +1,71 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #f6f4ee;
+  --foreground: #162018;
+  --muted: #667267;
+  --card: #fffdf8;
+  --card-strong: #f0eadf;
+  --border: #d7ddd1;
+  --accent: #1f6a52;
+  --accent-strong: #124b3a;
+  --accent-soft: #deeee7;
+  --warning: #c17b1c;
+  --danger: #b44949;
+  --shadow: 0 20px 40px rgba(22, 32, 24, 0.08);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family:
+    "Aptos",
+    "Segoe UI",
+    "Trebuchet MS",
+    sans-serif;
+  background-image:
+    radial-gradient(circle at top left, rgba(31, 106, 82, 0.08), transparent 28%),
+    radial-gradient(circle at top right, rgba(193, 123, 28, 0.08), transparent 25%);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family:
+    "Iowan Old Style",
+    "Palatino Linotype",
+    "Book Antiqua",
+    serif;
+  letter-spacing: -0.02em;
+}
+
+::selection {
+  background: rgba(31, 106, 82, 0.18);
+}
+
+@utility card-surface {
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(252, 248, 240, 0.96));
+  box-shadow: var(--shadow);
+}
+
+@utility muted-copy {
+  color: var(--muted);
+}
+
+@utility page-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media print {
+  body {
+    background: white;
+    background-image: none;
+  }
+
+  .no-print {
+    display: none !important;
+  }
 }
