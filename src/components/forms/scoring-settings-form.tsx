@@ -14,6 +14,25 @@ import { toast } from "@/components/ui/sonner";
 import type { ScoringConfigShape } from "@/lib/scoring/defaults";
 import { scoringConfigSchema } from "@/lib/validation";
 
+const pillarKeys = [
+  "material",
+  "packaging",
+  "carbon",
+  "water",
+  "sourcing",
+  "transport",
+  "social",
+] as const;
+
+const penaltyKeys = [
+  "renewableMaterialPercent",
+  "packagingData",
+  "co2eEstimate",
+  "waterEstimate",
+  "traceabilityScore",
+  "transportMode",
+] as const;
+
 export function ScoringSettingsForm({
   config,
   benchmarks,
@@ -22,7 +41,11 @@ export function ScoringSettingsForm({
   benchmarks: Benchmark[];
 }) {
   const router = useRouter();
-  const form = useForm({
+  const form = useForm<
+    import("zod").input<typeof scoringConfigSchema>,
+    undefined,
+    import("zod").output<typeof scoringConfigSchema>
+  >({
     resolver: zodResolver(scoringConfigSchema),
     defaultValues: {
       pillarWeights: config.pillarWeights,
@@ -64,10 +87,10 @@ export function ScoringSettingsForm({
         </CardHeader>
         <CardContent className="grid gap-4">
           <FieldGrid>
-            {Object.keys(config.pillarWeights).map((key) => (
+            {pillarKeys.map((key) => (
               <label key={key} className="grid gap-2">
                 <span className="text-sm font-semibold capitalize">{key}</span>
-                <Input type="number" {...form.register(`pillarWeights.${key}` as const, { valueAsNumber: true })} />
+                <Input type="number" {...form.register(`pillarWeights.${key}`, { valueAsNumber: true })} />
               </label>
             ))}
           </FieldGrid>
@@ -117,10 +140,10 @@ export function ScoringSettingsForm({
           <CardTitle>Missing-data penalties</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {Object.keys(config.missingDataPenalties).map((key) => (
+          {penaltyKeys.map((key) => (
             <label key={key} className="grid gap-2">
               <span className="text-sm font-semibold">{key}</span>
-              <Input type="number" {...form.register(`missingDataPenalties.${key}` as const, { valueAsNumber: true })} />
+              <Input type="number" {...form.register(`missingDataPenalties.${key}`, { valueAsNumber: true })} />
             </label>
           ))}
         </CardContent>

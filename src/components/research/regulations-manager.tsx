@@ -43,6 +43,7 @@ const formSchema = z.object({
 
 type RegulationWithCountry = RegulationNote & { country: CountryResearch };
 type FormValues = z.infer<typeof formSchema>;
+type FormInput = z.input<typeof formSchema>;
 
 export function RegulationsManager({
   regulations,
@@ -54,7 +55,7 @@ export function RegulationsManager({
   const router = useRouter();
   const [editing, setEditing] = useState<RegulationWithCountry | null>(null);
 
-  const form = useForm<FormValues>({
+  const form = useForm<FormInput, undefined, FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       countryResearchId: countries[0]?.id ?? "",

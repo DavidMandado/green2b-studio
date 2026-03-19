@@ -36,12 +36,13 @@ const formSchema = z.object({
 });
 
 type FormValues = z.infer<typeof formSchema>;
+type FormInput = z.input<typeof formSchema>;
 
 export function CompetitorsManager({ competitors }: { competitors: Competitor[] }) {
   const router = useRouter();
   const [editing, setEditing] = useState<Competitor | null>(null);
 
-  const form = useForm<FormValues>({
+  const form = useForm<FormInput, undefined, FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",

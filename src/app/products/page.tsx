@@ -1,5 +1,9 @@
+import Link from "next/link";
+
 import { ProductsManager } from "@/components/products/products-manager";
 import { PageHeader } from "@/components/shared/page-header";
+import { buttonStyles } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { getProductsWithScores, getSuppliers } from "@/lib/server/queries";
 
 export default async function ProductsPage() {
@@ -20,6 +24,11 @@ export default async function ProductsPage() {
         eyebrow="Product Database"
         title="Products"
         description="Full commercial and sustainability dataset, ready for scoring, comparison, and buyer-facing grade cards."
+        actions={
+          <Link href="/api/products/export" className={cn("inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition", buttonStyles.secondary)}>
+            Export CSV
+          </Link>
+        }
       />
       <ProductsManager products={products} suppliers={suppliers} categoryAverages={categoryAverages} />
     </>

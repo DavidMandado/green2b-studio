@@ -41,12 +41,13 @@ const formSchema = z.object({
 
 type SupplierRow = Supplier & { evidence: Evidence[]; products: Product[] };
 type FormValues = z.infer<typeof formSchema>;
+type FormInput = z.input<typeof formSchema>;
 
 export function SuppliersManager({ suppliers }: { suppliers: SupplierRow[] }) {
   const router = useRouter();
   const [editing, setEditing] = useState<SupplierRow | null>(null);
 
-  const form = useForm<FormValues>({
+  const form = useForm<FormInput, undefined, FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",

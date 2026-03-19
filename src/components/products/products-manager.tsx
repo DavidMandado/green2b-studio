@@ -67,6 +67,7 @@ const formSchema = z.object({
 });
 
 type FormValues = z.infer<typeof formSchema>;
+type FormInput = z.input<typeof formSchema>;
 
 function fromNullableNumber(value: number | null) {
   return value === null || value === undefined ? "" : String(value);
@@ -102,7 +103,7 @@ export function ProductsManager({
   const router = useRouter();
   const [editing, setEditing] = useState<Product | null>(null);
 
-  const form = useForm<FormValues>({
+  const form = useForm<FormInput, undefined, FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       supplierId: suppliers[0]?.id ?? "",

@@ -38,6 +38,7 @@ const formSchema = z.object({
 });
 
 type FormValues = z.infer<typeof formSchema>;
+type FormInput = z.input<typeof formSchema>;
 
 export function InterviewsManager({
   interviews,
@@ -49,7 +50,7 @@ export function InterviewsManager({
   const router = useRouter();
   const [editing, setEditing] = useState<(BuyerInterview & { country: CountryResearch }) | null>(null);
 
-  const form = useForm<FormValues>({
+  const form = useForm<FormInput, undefined, FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       companyName: "",

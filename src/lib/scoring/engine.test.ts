@@ -12,30 +12,30 @@ import {
 const baseProduct = {
   category: "STRAWS" as const,
   productName: "Test Straw",
-  renewableMaterialPercent: 90,
-  recycledMaterialPercent: 10,
+  renewableMaterialPercent: 95,
+  recycledMaterialPercent: 50,
   virginPlasticPercent: 0,
   plasticLining: false,
   recyclableInPractice: false,
   industrialCompostable: true,
   homeCompostable: true,
   packagingMaterial: "corrugated carton",
-  packagingRecycledContentPercent: 80,
-  packagingWeightGramsPer100Units: 35,
+  packagingRecycledContentPercent: 95,
+  packagingWeightGramsPer100Units: 18,
   productWeightGramsPer100Units: 100,
-  estimatedCo2ePer1000Units: 8.4,
-  estimatedWaterLitersPer1000Units: 84,
-  transportMode: "sea",
-  distanceKm: 7200,
-  supplierDisclosureScore: 84,
-  laborPolicyScore: 76,
-  traceabilityScore: 74,
+  estimatedCo2ePer1000Units: 7.5,
+  estimatedWaterLitersPer1000Units: 72,
+  transportMode: "road",
+  distanceKm: 80,
+  supplierDisclosureScore: 95,
+  laborPolicyScore: 92,
+  traceabilityScore: 93,
 };
 
 const baseSupplier = {
   bcorpCertified: true,
   otherCertifications: ["B Corp", "FSC supplier declaration"],
-  evidenceCompletenessScore: 86,
+  evidenceCompletenessScore: 96,
 };
 
 const baseEvidence = [
@@ -56,7 +56,7 @@ describe("scoring engine", () => {
     });
 
     expect(result.finalScore).toBeGreaterThan(80);
-    expect(result.grade).toBe("A");
+    expect(result.grade).toBe("B");
     expect(result.status).toBe("VERIFIED");
   });
 

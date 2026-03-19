@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Green2B Studio
 
-## Getting Started
+Green2B Studio is a local prototype for a student consulting team working with Green2B. It combines:
 
-First, run the development server:
+- market research and country prioritization
+- supplier and product database management
+- transparent sustainability scoring
+- buyer-facing product comparison
+- analyst-facing scoring configuration
+- a pipeline demo and request-template generator
+
+## Stack
+
+- Next.js App Router
+- TypeScript
+- Tailwind CSS
+- Prisma + SQLite
+- React Hook Form + Zod
+- Recharts
+- TanStack Table
+- Vitest
+
+## Key Routes
+
+- `/dashboard`
+- `/research/countries`
+- `/research/interviews`
+- `/research/competitors`
+- `/research/regulations`
+- `/suppliers`
+- `/suppliers/[id]`
+- `/products`
+- `/products/[id]`
+- `/compare`
+- `/pipeline`
+- `/settings/scoring`
+- `/reports/summary`
+
+## Local Development
+
+Install dependencies if needed:
+
+```bash
+npm install
+```
+
+Push the schema and seed the SQLite database:
+
+```bash
+npm run db:push
+npm run db:seed
+```
+
+Start the app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run verification:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run test
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Data Model Highlights
 
-## Learn More
+- `CountryResearch`
+- `BuyerInterview`
+- `Competitor`
+- `RegulationNote`
+- `Supplier`
+- `Product`
+- `Evidence`
+- `Benchmark`
+- `ScoringConfig`
+- `AppState`
 
-To learn more about Next.js, take a look at the following resources:
+## Scoring Logic
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The scoring engine combines:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- 7 weighted sustainability pillars
+- a separate confidence score
+- missing-data penalties capped at 25
+- grade mapping from A to E
+- status mapping: Verified, Provisional, Insufficient Data
 
-## Deploy on Vercel
+The core implementation lives in:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `src/lib/scoring/defaults.ts`
+- `src/lib/scoring/engine.ts`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Seeded Prototype Content
+
+- 4 countries
+- 8 buyer interviews
+- 6 competitors
+- 12 regulation notes
+- 6 suppliers
+- 12 products
+- 26 evidence records
+- category benchmarks and default scoring config
+
+## Notes
+
+- This is a prototype, not a production system.
+- All seeded research and regulatory content is fictional demo content.
+- No external APIs or authentication are required.
